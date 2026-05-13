@@ -3,56 +3,78 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Switch,
+  Alert,
 } from "react-native";
 import {
   ThemeProvider,
-  Button
+  ListItem,
+  Button,
 } from "react-native-elements";
 
 //definição dos temas
-const themes = {
-  blue: { colors: { primary: "#007aff", background: "#e3f2fd", textPrimary: '#333' } },
-  orange: { colors: { primary: "#ff5722", background: "#fff3e0", textPrimary: '#444' } },
-  green: { colors: { primary: "#4caf50", background: "#e8f5e9", textPrimary: '#222' } },
-  red: { colors: { primary: "#f44336", background: "#fdedec", textPrimary: '#222' } },
-  purple: { colors: { primary: "#9c27b0", background: "#f3e5f5", textPrimary: '#222' } },
-  teal: { colors: { primary: "#009688", background: "#e0f2f1", textPrimary: '#222' } },
-  yellow: { colors: { primary: "#ffeb3b", background: "#fffde7", textPrimary: '#222' } },
+const ligthTheme = {
+  colors: {
+    primary: '#007aff',
+    background: '#f5f5f5',
+    textPrimary: '#333',
+  }
+};
+
+const darkTheme = {
+  colors: {
+    primary: '#007aff',
+    background: '#333',
+    textPrimary: '#f5f5f5',
+  }
 };
 
 const App = () => {
-  const [currentTheme, setCurrentTheme] = useState(themes.blue);
+  const [notifications, setNotifications] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
-  const resetarCor = () =>{
-    setCurrentTheme(themes.blue);
+
+  const theme = darkMode ? darkTheme : ligthTheme;
+  
+  const resetarCor = () => {
+    Alert.alert("puf!", 'Cor resetada!');
+  }
+
+  if (notifications) {
+    resetarCor();
+  } else {
+    Alert.alert("Notificações desativadas", "Você não receberá mais notificações.");
   }
 
   return (
-    <ThemeProvider theme={currentTheme}>
+    <ThemeProvider theme={theme}>
       <View style={[styles.container, {
-        backgroundColor: currentTheme.colors.background
+        backgroundColor: theme.colors.background
       }]}>
         <Text style={[styles.text, {
-          color: currentTheme.colors.textPrimary
+          color: theme.colors.textPrimary
         }]}>
-          Selecione um tema:
+          Configurações
         </Text>
         <Button title='Clique Aqui' onPress={resetarCor} buttonStyle={{
-          backgroundColor: currentTheme.colors.primary
+          backgroundColor: theme.colors.primary
         }} />
 
-        <View style={styles.colorPicker}>
-          {Object.keys(themes).map((themeKey) => (
-            <TouchableOpacity
-              key={themeKey}
-              style={[styles.colorBox, {
-                backgroundColor: themes[themeKey].colors.primary
-              }]}
-              onPress={() => setCurrentTheme(themes[themeKey])}
-            />
-          ))}
-        </View>
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title>Notificações</ListItem.Title>
+          </ListItem.Content>
+          <Switch value={notifications}
+            onValueChange={setNotifications} />
+        </ListItem>
+
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title>Modo Escuro</ListItem.Title>
+          </ListItem.Content>
+          <Switch value={darkMode}
+            onValueChange={setDarkMode} />
+        </ListItem>
       </View>
     </ThemeProvider>
   )
@@ -61,26 +83,13 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    paddingTop: 50,
+    paddingHorizontal: 20,
   },
   text: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     marginBottom: 15,
-  },
-  colorPicker: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  colorBox: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    margin: 8,
   },
 });
 
